@@ -6,7 +6,7 @@ on:
       - main  # Trigger on changes to main branch
 
 jobs:
-  deploy-dev:
+  deploy-dev-testing:
     runs-on: ubuntu-latest
     environment: dev
     steps:
