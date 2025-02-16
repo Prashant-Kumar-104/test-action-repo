@@ -1,0 +1,95 @@
+name: "Terraform CI/CD Workflow"
+
+on:
+  push:
+    branches:
+      - main  # Trigger on changes to main branch
+
+jobs:
+  deploy-dev:
+    runs-on: ubuntu-latest
+    environment: dev
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform Init
+        run: terraform init -backend-config=environments/dev/backend.tf
+
+      - name: Terraform Plan
+        run: terraform plan -var-file=environments/dev/terraform.tfvars
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve -var-file=environments/dev/terraform.tfvars
+
+  deploy-stage:
+    needs: deploy-dev
+    runs-on: ubuntu-latest
+    environment: stage
+    steps:
+      - name: Wait for Approval
+        run: echo "Waiting for approval to deploy to Stage"
+    
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform Init
+        run: terraform init -backend-config=environments/stage/backend.tf
+
+      - name: Terraform Plan
+        run: terraform plan -var-file=environments/stage/terraform.tfvars
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve -var-file=environments/stage/terraform.tfvars
+
+  deploy-uat:
+    needs: deploy-stage
+    runs-on: ubuntu-latest
+    environment: uat
+    steps:
+      - name: Wait for Approval
+        run: echo "Waiting for approval to deploy to UAT"
+    
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform Init
+        run: terraform init -backend-config=environments/uat/backend.tf
+
+      - name: Terraform Plan
+        run: terraform plan -var-file=environments/uat/terraform.tfvars
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve -var-file=environments/uat/terraform.tfvars
+
+  deploy-prod:
+    needs: deploy-uat
+    runs-on: ubuntu-latest
+    environment: prod
+    steps:
+      - name: Wait for Approval
+        run: echo "Waiting for approval to deploy to Prod"
+    
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform Init
+        run: terraform init -backend-config=environments/prod/backend.tf
+
+      - name: Terraform Plan
+        run: terraform plan -var-file=environments/prod/terraform.tfvars
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve -var-file=environments/prod/terraform.tfvars
