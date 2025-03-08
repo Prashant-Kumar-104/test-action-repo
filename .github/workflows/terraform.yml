@@ -31,7 +31,8 @@ jobs:
         working-directory: ${{ env.ROOT_PATH }}
 
       - name: Terraform Plan
-        run: terraform plan -var-file=environments/dev/dev.auto.tfvars
+        #run: terraform plan -var-file=environments/dev/dev.auto.tfvars
+         run: terraform plan
         working-directory: ${{ env.ROOT_PATH }}
 
       - name: Terraform Apply
