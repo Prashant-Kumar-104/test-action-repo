@@ -28,7 +28,6 @@ jobs:
 
       - name: Terraform Init
         run: terraform init
-        #run: terraform init -backend-config=environments/dev/dev.auto.tfvars
         working-directory: ${{ env.ROOT_PATH }}
 
       - name: Terraform Format
@@ -39,21 +38,36 @@ jobs:
         run: terraform validate
         working-directory: ${{ env.ROOT_PATH }}
 
+      # -------------------------
+      # **TFLint - Terraform Linting**
+      # -------------------------
+      - name: Install TFLint
+        run: |
+          curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
+
+      - name: Run TFLint
+        run: |
+          tflint --init
+          tflint -f compact
+        working-directory: ${{ env.ROOT_PATH }}
+
+      # -------------------------
+      # **TFSEC - Terraform Security Scanning**
+      # -------------------------
+      - name: Install tfsec
+        run: |
+          curl -s https://raw.githubusercontent.com/aquasecurity/tfsec/master/scripts/install_linux.sh | bash
+
+      - name: Run tfsec
+        run: |
+          tfsec --concise-output --soft-fail \
+                --exclude-severity CRITICAL,MAJOR
+        working-directory: ${{ env.ROOT_PATH }}
+
       - name: Terraform Plan
-        run: terraform plan 
-        #run: terraform plan -var-file=environments/dev/dev.auto.tfvars
+        run: terraform plan
         working-directory: ${{ env.ROOT_PATH }}
 
-      # - name: Terraform Apply
-      #   run: terraform apply -auto-approve
-      #   #run: terraform apply -auto-approve -var-file=environments/dev/dev.auto.tfvars
-      #   working-directory: ${{ env.ROOT_PATH }}
-
-      # - name: Terraform Output
-      #   run: terraform output
-      #   working-directory: ${{ env.ROOT_PATH }}
-
-      - name: Terraform Destroy
-        run: terraform destroy -auto-approve
+      - name: Terraform Apply
+        run: terraform apply -auto-approve
         working-directory: ${{ env.ROOT_PATH }}
-    
