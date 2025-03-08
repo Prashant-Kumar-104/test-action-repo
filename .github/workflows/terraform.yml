@@ -54,11 +54,15 @@ jobs:
         working-directory: ${{ env.ROOT_PATH }}
 
       
-      - name: install tfsec
+      - name: Install tfsec
         run: |
-          curl -L "$(curl -s https://api.github.com/repos/tfsec/tfsec/releases/latest | grep -o -E "https://.+?tfsec-linux-amd64")" > tfsec
+          echo "Fetching the latest tfsec release..."
+          TFSEC_URL=$(curl -s https://api.github.com/repos/tfsec/tfsec/releases/latest | grep -o -E "https://.+?tfsec-linux-amd64" | head -n 1)
+          echo "Downloading tfsec from $TFSEC_URL..."
+          curl -L "$TFSEC_URL" -o tfsec
           chmod +x tfsec
           sudo mv tfsec /usr/local/bin/
+          echo "tfsec installed successfully."
         working-directory: ${{ env.ROOT_PATH }}
 
       - name: Run tfsec
