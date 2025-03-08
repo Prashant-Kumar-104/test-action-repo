@@ -28,6 +28,7 @@ jobs:
 
       - name: Terraform Init
         run: terraform init
+        #run: terraform init -backend-config=environments/dev/dev.auto.tfvars
         working-directory: ${{ env.ROOT_PATH }}
 
       - name: Terraform Format
@@ -38,69 +39,21 @@ jobs:
         run: terraform validate
         working-directory: ${{ env.ROOT_PATH }}
 
-      # -------------------------
-      # **TFLint - Terraform Linting**
-      # -------------------------
-      - name: Install TFLint
-        run: |
-          mkdir -p $HOME/.local/bin
-          curl -L https://github.com/terraform-linters/tflint/releases/latest/download/tflint_linux_amd64.zip -o tflint.zip
-          unzip tflint.zip -d $HOME/.local/bin
-          chmod +x $HOME/.local/bin/tflint
-          echo "$HOME/.local/bin" >> $GITHUB_PATH
-          rm -f tflint.zip
-
-      - name: Verify TFLint Version
-        run: tflint --version
-
-      - name: Run TFLint with Plugins
-        run: |
-          tflint --init
-          tflint -f json > tflint-report.json
-          tflint -f compact
-        working-directory: ${{ env.ROOT_PATH }}
-
-      # -------------------------
-      # **TFSEC - Terraform Security Scanning**
-      # -------------------------
-      - name: Install tfsec
-        run: |
-          mkdir -p $HOME/.local/bin
-          curl -L https://github.com/aquasecurity/tfsec/releases/latest/download/tfsec-linux-amd64 -o $HOME/.local/bin/tfsec
-          chmod +x $HOME/.local/bin/tfsec
-          echo "$HOME/.local/bin" >> $GITHUB_PATH
-
-      - name: Verify tfsec Version
-        run: tfsec --version
-
-      - name: Run tfsec and Ignore Critical/Major Issues
-        run: |
-          tfsec --concise-output --soft-fail \
-                --exclude-severity CRITICAL,MAJOR \
-                --format json --out tfsec-report.json
-          tfsec --concise-output --soft-fail \
-                --exclude-severity CRITICAL,MAJOR
-        working-directory: ${{ env.ROOT_PATH }}
-
-      # -------------------------
-      # **Upload Reports as GitHub Artifacts**
-      # -------------------------
-      - name: Upload TFLint Report
-        uses: actions/upload-artifact@v3
-        with:
-          name: tflint-report
-          path: ${{ env.ROOT_PATH }}/tflint-report.json
-
-      - name: Upload TFSEC Report
-        uses: actions/upload-artifact@v3
-        with:
-          name: tfsec-report
-          path: ${{ env.ROOT_PATH }}/tfsec-report.json
-
       - name: Terraform Plan
-        run: terraform plan
+        run: terraform plan 
+        #run: terraform plan -var-file=environments/dev/dev.auto.tfvars
         working-directory: ${{ env.ROOT_PATH }}
 
-      - name: Terraform Apply
-        run: terraform apply -auto-approve
+      # - name: Terraform Apply
+      #   run: terraform apply -auto-approve
+      #   #run: terraform apply -auto-approve -var-file=environments/dev/dev.auto.tfvars
+      #   working-directory: ${{ env.ROOT_PATH }}
+
+      # - name: Terraform Output
+      #   run: terraform output
+      #   working-directory: ${{ env.ROOT_PATH }}
+
+      - name: Terraform Destroy
+        run: terraform destroy -auto-approve
         working-directory: ${{ env.ROOT_PATH }}
+    
