@@ -54,7 +54,7 @@ jobs:
         working-directory: ${{ env.ROOT_PATH }}
 
       - name: Upload TFLint Report as Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v2
         with:
           name: tflint-report
           path: ${{ env.ROOT_PATH }}/tflint-report.txt
