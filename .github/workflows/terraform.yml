@@ -13,7 +13,7 @@ env:
   ROOT_PATH: ${{ github.workspace }}/environments/dev
 
 jobs:
-  deploy-dev-testing:
+  terraform-deploy:
     runs-on: ubuntu-latest
     environment: dev
     steps:
