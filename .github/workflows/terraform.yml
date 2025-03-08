@@ -53,7 +53,7 @@ jobs:
       #   run: terraform output
       #   working-directory: ${{ env.ROOT_PATH }}
 
-      # - name: Terraform Destroy
-      #   run: terraform destroy -auto-approve
-      #   working-directory: ${{ env.ROOT_PATH }}
+      - name: Terraform Destroy
+        run: terraform destroy -auto-approve
+        working-directory: ${{ env.ROOT_PATH }}
     
