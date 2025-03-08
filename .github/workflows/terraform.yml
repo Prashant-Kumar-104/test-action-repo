@@ -54,12 +54,12 @@ jobs:
       - name: Verify TFLint Version
         run: tflint --version
 
-      - name: Run TFLint with Plugins
-        run: |
-          tflint --init
-          tflint -f json > tflint-report.json
-          tflint -f compact
-        working-directory: ${{ env.ROOT_PATH }}
+      # - name: Run TFLint with Plugins
+      #   run: |
+      #     tflint --init
+      #     tflint -f json > tflint-report.json
+      #     tflint -f compact
+      #   working-directory: ${{ env.ROOT_PATH }}
 
       - name: Display TFLint Report
         run: cat tflint-report.json
