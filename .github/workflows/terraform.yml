@@ -36,6 +36,7 @@ jobs:
         working-directory: ${{ env.ROOT_PATH }}
 
       - name: Terraform Apply
-        run: terraform apply -auto-approve -var-file=environments/dev/dev.auto.tfvars
+        run: terraform apply -auto-approve
+        #run: terraform apply -auto-approve -var-file=environments/dev/dev.auto.tfvars
         working-directory: ${{ env.ROOT_PATH }}
     
