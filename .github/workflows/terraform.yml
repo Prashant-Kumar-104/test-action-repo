@@ -53,24 +53,26 @@ jobs:
             cat tflint-report.txt
         working-directory: ${{ env.ROOT_PATH }}
 
-      
+
       - name: Install tfsec
         run: |
-          echo "Fetching the latest tfsec release..."
-          TFSEC_URL=$(curl -s https://api.github.com/repos/tfsec/tfsec/releases/latest | grep -o -E "https://.+?tfsec-linux-amd64" | head -n 1)
-          echo "Downloading tfsec from $TFSEC_URL..."
-          curl -L "$TFSEC_URL" -o tfsec
-          chmod +x tfsec
-          sudo mv tfsec /usr/local/bin/
-          echo "tfsec installed successfully."
+          mkdir -p $HOME/.local/bin
+          curl -L https://github.com/aquasecurity/tfsec/releases/latest/download/tfsec-linux-amd64 -o $HOME/.local/bin/tfsec
+          chmod +x $HOME/.local/bin/tfsec
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+        
+      - name: Run tfsec Security Scan
+        run: |
+            tfsec --concise-output --soft-fail \
+                  --format json --out tfsec-report.json
+            tfsec --concise-output --soft-fail
         working-directory: ${{ env.ROOT_PATH }}
 
-      - name: Run tfsec
-        run: |
-            echo "Running tfsec..."
-            tfsec ${{ env.ROOT_PATH }}
-        working-directory: ${{ env.ROOT_PATH }}
-        
+      - name: Upload TFSEC Report
+        uses: actions/upload-artifact@v3
+        with:
+            name: tfsec-report
+            path: ${{ env.ROOT_PATH }}/tfsec-report.json
 
       - name: Terraform Plan
         run: terraform plan 
