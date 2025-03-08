@@ -52,6 +52,23 @@ jobs:
             echo "=== TFLint Output ==="
             cat tflint-report.txt
         working-directory: ${{ env.ROOT_PATH }}
+
+      
+      - name: install tfsec
+        run: |
+          curl -L "$(curl -s https://api.github.com/repos/tfsec/tfsec/releases/latest | grep -o -E "https://.+?tfsec-linux-amd64")" > tfsec
+          chmod +x tfsec
+          sudo mv tfsec /usr/local/bin/
+        working-directory: ${{ env.ROOT_PATH }}
+
+      - name: Run tfsec
+        run: |
+          echo "Running tfsec..."
+          tfsec > tfsec-report.txt 2>&1 || echo "tfsec found issues."
+          echo "tfsec output saved to tfsec-report.txt"
+          echo "=== tfsec Output ==="
+          cat tfsec-report.txt
+        working-directory: ${{ env.ROOT_PATH }}
         
 
       - name: Terraform Plan
