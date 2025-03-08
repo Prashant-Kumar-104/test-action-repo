@@ -60,12 +60,6 @@ jobs:
           tflint -f json > tflint-report.json
           tflint -f compact
         working-directory: ${{ env.ROOT_PATH }}
-
-      - name: Upload TFLint console output
-        uses: actions/upload-artifact@v2
-        with:
-          name: tflint-report
-          path: ${{ env.ROOT_PATH }}/tflint-report.json
         
 
       - name: Terraform Plan
