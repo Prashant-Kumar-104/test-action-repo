@@ -31,21 +31,25 @@ jobs:
         #run: terraform init -backend-config=environments/dev/dev.auto.tfvars
         working-directory: ${{ env.ROOT_PATH }}
 
+      - name: Terraform Validate
+        run: terraform validate
+        working-directory: ${{ env.ROOT_PATH }}
+
       - name: Terraform Plan
         run: terraform plan 
         #run: terraform plan -var-file=environments/dev/dev.auto.tfvars
         working-directory: ${{ env.ROOT_PATH }}
 
-      # - name: Terraform Apply
-      #   run: terraform apply -auto-approve
-      #   #run: terraform apply -auto-approve -var-file=environments/dev/dev.auto.tfvars
-      #   working-directory: ${{ env.ROOT_PATH }}
+      - name: Terraform Apply
+        run: terraform apply -auto-approve
+        #run: terraform apply -auto-approve -var-file=environments/dev/dev.auto.tfvars
+        working-directory: ${{ env.ROOT_PATH }}
 
       # - name: Terraform Output
       #   run: terraform output
       #   working-directory: ${{ env.ROOT_PATH }}
 
-      - name: Terraform Destroy
-        run: terraform destroy -auto-approve
-        working-directory: ${{ env.ROOT_PATH }}
+      # - name: Terraform Destroy
+      #   run: terraform destroy -auto-approve
+      #   working-directory: ${{ env.ROOT_PATH }}
     
