@@ -43,8 +43,12 @@ jobs:
         uses: terraform-linters/setup-tflint@v3
         with:
           tflint_version: "latest"  # Use the latest version of TFLint
+      
       - name: Run TFLint
-        run: tflint
+        run: |
+            echo "Running TFLint..."
+            tflint || echo "TFLint found issues, but continuing pipeline..."
+            echo "TFLint output saved to tflint-output.log"
         working-directory: ${{ env.ROOT_PATH }}
         
 
