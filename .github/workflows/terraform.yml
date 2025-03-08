@@ -4,12 +4,13 @@ on:
   push:
     branches:
       - main  # Trigger on changes to main branch
+
 env:
   ARM_CLIENT_ID: ${{ secrets.CLIENT_ID }}
   ARM_CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
   ARM_SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTION_ID }}
   ARM_TENANT_ID: ${{ secrets.TENANT_ID }}
-  ROOT_PATH: ${{ github.workspace }}/env/dev
+  ROOT_PATH: ${{ github.workspace }}/environments/dev
 
 jobs:
   deploy-dev-testing:
@@ -19,83 +20,20 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      - name: List Files in Workspace
+        run: ls -R
+
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
 
       - name: Terraform Init
         run: terraform init -backend-config=environments/dev/dev.auto.tfvars
+        working-directory: ${{ env.ROOT_PATH }}
 
       - name: Terraform Plan
         run: terraform plan -var-file=environments/dev/dev.auto.tfvars
+        working-directory: ${{ env.ROOT_PATH }}
 
       - name: Terraform Apply
         run: terraform apply -auto-approve -var-file=environments/dev/dev.auto.tfvars
-
-#   deploy-stage:
-#     needs: deploy-dev
-#     runs-on: ubuntu-latest
-#     environment: stage
-#     steps:
-#       - name: Wait for Approval
-#         run: echo "Waiting for approval to deploy to Stage"
-    
-#       - name: Checkout Repository
-#         uses: actions/checkout@v4
-
-#       - name: Setup Terraform
-#         uses: hashicorp/setup-terraform@v3
-
-#       - name: Terraform Init
-#         run: terraform init -backend-config=environments/stage/backend.tf
-
-#       - name: Terraform Plan
-#         run: terraform plan -var-file=environments/stage/terraform.tfvars
-
-#       - name: Terraform Apply
-#         run: terraform apply -auto-approve -var-file=environments/stage/terraform.tfvars
-
-#   deploy-uat:
-#     needs: deploy-stage
-#     runs-on: ubuntu-latest
-#     environment: uat
-#     steps:
-#       - name: Wait for Approval
-#         run: echo "Waiting for approval to deploy to UAT"
-    
-#       - name: Checkout Repository
-#         uses: actions/checkout@v4
-
-#       - name: Setup Terraform
-#         uses: hashicorp/setup-terraform@v3
-
-#       - name: Terraform Init
-#         run: terraform init -backend-config=environments/uat/backend.tf
-
-#       - name: Terraform Plan
-#         run: terraform plan -var-file=environments/uat/terraform.tfvars
-
-#       - name: Terraform Apply
-#         run: terraform apply -auto-approve -var-file=environments/uat/terraform.tfvars
-
-#   deploy-prod:
-#     needs: deploy-uat
-#     runs-on: ubuntu-latest
-#     environment: prod
-#     steps:
-#       - name: Wait for Approval
-#         run: echo "Waiting for approval to deploy to Prod"
-    
-#       - name: Checkout Repository
-#         uses: actions/checkout@v4
-
-#       - name: Setup Terraform
-#         uses: hashicorp/setup-terraform@v3
-
-#       - name: Terraform Init
-#         run: terraform init -backend-config=environments/prod/backend.tf
-
-#       - name: Terraform Plan
-#         run: terraform plan -var-file=environments/prod/terraform.tfvars
-
-#       - name: Terraform Apply
-#         run: terraform apply -auto-approve -var-file=environments/prod/terraform.tfvars
+        working-directory: ${{ env.ROOT_PATH }}
