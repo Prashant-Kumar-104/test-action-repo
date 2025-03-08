@@ -39,30 +39,12 @@ jobs:
         run: terraform validate
         working-directory: ${{ env.ROOT_PATH }}
       
-      # -------------------------
-      # **TFLint - Terraform Linting**
-      # -------------------------
-      - name: Install TFLint
-        run: |
-          mkdir -p $HOME/.local/bin
-          curl -L https://github.com/terraform-linters/tflint/releases/latest/download/tflint_linux_amd64.zip -o tflint.zip
-          unzip tflint.zip -d $HOME/.local/bin
-          chmod +x $HOME/.local/bin/tflint
-          echo "$HOME/.local/bin" >> $GITHUB_PATH
-          rm -f tflint.zip
-
-      - name: Verify TFLint Version
-        run: tflint --version
-
-      # - name: Run TFLint with Plugins
-      #   run: |
-      #     tflint --init
-      #     tflint -f json > tflint-report.json
-      #     tflint -f compact
-      #   working-directory: ${{ env.ROOT_PATH }}
-
-      - name: Display TFLint Report
-        run: cat tflint-report.json
+      - name: Setup TFLint
+        uses: terraform-linters/setup-tflint@v3
+        with:
+          tflint_version: "latest"  # Use the latest version of TFLint
+      - name: Run TFLint
+        run: tflint
         working-directory: ${{ env.ROOT_PATH }}
         
 
@@ -80,7 +62,7 @@ jobs:
       #   run: terraform output
       #   working-directory: ${{ env.ROOT_PATH }}
 
-      - name: Terraform Destroy
-        run: terraform destroy -auto-approve
-        working-directory: ${{ env.ROOT_PATH }}
+      # - name: Terraform Destroy
+      #   run: terraform destroy -auto-approve
+      #   working-directory: ${{ env.ROOT_PATH }}
     
