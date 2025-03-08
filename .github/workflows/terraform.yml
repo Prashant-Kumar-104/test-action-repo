@@ -67,11 +67,8 @@ jobs:
 
       - name: Run tfsec
         run: |
-          echo "Running tfsec..."
-          tfsec > tfsec-report.txt 2>&1 || echo "tfsec found issues."
-          echo "tfsec output saved to tfsec-report.txt"
-          echo "=== tfsec Output ==="
-          cat tfsec-report.txt
+            echo "Running tfsec..."
+            tfsec ${{ env.ROOT_PATH }}
         working-directory: ${{ env.ROOT_PATH }}
         
 
