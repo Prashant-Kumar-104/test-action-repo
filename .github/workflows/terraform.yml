@@ -47,9 +47,17 @@ jobs:
       - name: Run TFLint
         run: |
             echo "Running TFLint..."
-            tflint || echo "TFLint found issues, but continuing pipeline..."
-            echo "TFLint output saved to tflint-output.log"
+            tflint > tflint-report.txt 2>&1 || echo "TFLint found issues."
+            echo "TFLint output saved to tflint-report.txt"
+            echo "=== TFLint Output ==="
+            cat tflint-report.txt
         working-directory: ${{ env.ROOT_PATH }}
+
+      - name: Upload TFLint Report as Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: tflint-report
+          path: ${{ env.ROOT_PATH }}/tflint-report.txt
         
 
       - name: Terraform Plan
