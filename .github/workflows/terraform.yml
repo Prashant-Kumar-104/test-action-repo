@@ -68,11 +68,11 @@ jobs:
             tfsec --concise-output --soft-fail
         working-directory: ${{ env.ROOT_PATH }}
 
-      - name: Upload TFSEC Report
-        uses: actions/upload-artifact@v3
-        with:
-            name: tfsec-report
-            path: ${{ env.ROOT_PATH }}/tfsec-report.json
+      # - name: Upload TFSEC Report
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #       name: tfsec-report
+      #       path: ${{ env.ROOT_PATH }}/tfsec-report.json
 
       - name: Terraform Plan
         run: terraform plan 
