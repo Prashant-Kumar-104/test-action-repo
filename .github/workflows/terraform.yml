@@ -65,10 +65,8 @@ jobs:
       - name: Run tfsec Security Scan
         run: |
             tfsec --concise-output --soft-fail \
-                  --format json --out tfsec-report.json
-                  --tfvars-file dev.auto.tfvars
-            tfsec --concise-output --soft-fail
-                  --tfvars-file dev.auto.tfvars
+                  --format json --out tfsec-report.json                  
+            tfsec --concise-output --soft-fail                  
         working-directory: ${{ env.ROOT_PATH }}
 
       - name: Debug - Check if tfsec-report.json exists
